@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Yuk - Nekopoi Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(26, 26, 46, 0.9);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #ff2a6d;
+        }
+
+        .header {
+            background: linear-gradient(to right, #ff2a6d, #ff7bac);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .anime-girl {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff7bac, #ff2a6d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .anime-girl img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .download-form {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px 0 0 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .url-input:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px #ff2a6d;
+        }
+
+        .url-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .download-btn {
+            padding: 15px 25px;
+            background: linear-gradient(to right, #ff2a6d, #ff7bac);
+            border: none;
+            border-radius: 0 10px 10px 0;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(to right, #ff1a5c, #ff6ba2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 42, 109, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .supported-sites {
+            background-color: rgba(255, 42, 109, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .supported-sites h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #ff7bac;
+        }
+
+        .sites-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .site-tag {
+            background: rgba(255, 42, 109, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 42, 109, 0.5);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer a {
+            color: #ff7bac;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Status dan hasil */
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            display: block;
+        }
+
+        .status.error {
+            background-color: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            display: block;
+        }
+
+        .status.info {
+            background-color: rgba(23, 162, 184, 0.2);
+            border: 1px solid rgba(23, 162, 184, 0.5);
+            display: block;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            margin-bottom: 10px;
+            color: #ff7bac;
+        }
+
+        .download-link {
+            display: block;
+            padding: 10px 15px;
+            background: linear-gradient(to right, #ff2a6d, #ff7bac);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .download-link:hover {
+            background: linear-gradient(to right, #ff1a5c, #ff6ba2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 42, 109, 0.4);
+        }
+
+        /* Animasi untuk efek visual */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsif */
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .anime-girl {
+                width: 60px;
+                height: 60px;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .url-input {
+                border-radius: 10px 10px 0 0;
+                margin-bottom: 0;
+            }
+            
+            .download-btn {
+                border-radius: 0 0 10px 10px;
+                padding: 12px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Download Yuk</h1>
+            <p>Aplikasi Downloader Anime Favoritmu</p>
+            <div class="anime-girl pulse">
+                <img src="https://i.imgur.com/6Q9Z7Zv.png" alt="Anime Girl" onerror="this.style.display='none'; this.parentNode.innerHTML='✿';">
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="download-form">
+                <div class="input-group">
+                    <input type="text" class="url-input" placeholder="Tempelkan link video di sini...">
+                    <button class="download-btn" id="downloadBtn">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+
+            <div class="status info" id="statusInfo">
+                <i class="fas fa-info-circle"></i> <span id="statusText">Sedang memproses...</span>
+            </div>
+
+            <div class="result" id="result">
+                <h3>Hasil Download:</h3>
+                <div id="resultContent"></div>
+            </div>
+            
+            <div class="supported-sites">
+                <h3>Situs yang Didukung:</h3>
+                <div class="sites-list">
+                    <span class="site-tag">Bing Oppai</span>
+                    <span class="site-tag">Hental Batch</span>
+                    <span class="site-tag">Nekopoi</span>
+                    <span class="site-tag">Dan lainnya</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>By Elysia Chan | <a href="#" id="nekopoiLink">Nekopoi Downloader</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            const urlInput = document.querySelector('.url-input');
+            const statusInfo = document.getElementById('statusInfo');
+            const statusText = document.getElementById('statusText');
+            const result = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+            const nekopoiLink = document.getElementById('nekopoiLink');
+
+            // Fungsi untuk menampilkan status
+            function showStatus(message, type) {
+                statusText.textContent = message;
+                statusInfo.className = 'status ' + type;
+            }
+
+            // Fungsi untuk menyembunyikan status
+            function hideStatus() {
+                statusInfo.style.display = 'none';
+            }
+
+            // Fungsi untuk menampilkan hasil
+            function showResult(content) {
+                resultContent.innerHTML = content;
+                result.classList.add('show');
+            }
+
+            // Fungsi untuk menyembunyikan hasil
+            function hideResult() {
+                result.classList.remove('show');
+            }
+
+            // Fungsi untuk menangani proses download
+            downloadBtn.addEventListener('click', async function() {
+                const url = urlInput.value.trim();
+                
+                if (url === '') {
+                    showStatus('Silakan masukkan URL video yang ingin diunduh!', 'error');
+                    urlInput.focus();
+                    return;
+                }
+
+                // Validasi URL sederhana
+                if (!url.startsWith('http')) {
+                    showStatus('URL tidak valid. Pastikan URL diawali dengan http:// atau https://', 'error');
+                    return;
+                }
+
+                // Tampilkan status loading
+                showStatus('Sedang memproses permintaan download...', 'info');
+                downloadBtn.disabled = true;
+                downloadBtn.innerHTML = '<div class="spinner"></div> Memproses...';
+                hideResult();
+
+                try {
+                    // Panggil API endpoint kita
+                    const response = await fetch('/api/download', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url: url })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        showStatus('Berhasil mendapatkan link download!', 'success');
+                        
+                        // Tampilkan hasil download
+                        let content = '';
+                        if (data.downloadLinks && data.downloadLinks.length > 0) {
+                            data.downloadLinks.forEach(link => {
+                                content += `
+                                    <a href="${link.url}" class="download-link" target="_blank">
+                                        <i class="fas fa-download"></i> Download ${link.quality || 'Video'}
+                                    </a>
+                                `;
+                            });
+                        } else if (data.videoUrl) {
+                            content = `
+                                <a href="${data.videoUrl}" class="download-link" target="_blank">
+                                    <i class="fas fa-download"></i> Download Video
+                                </a>
+                            `;
+                        } else {
+                            content = '<p>Tidak ada link download yang tersedia.</p>';
+                        }
+                        
+                        showResult(content);
+                    } else {
+                        showStatus(`Error: ${data.error || 'Gagal memproses download'}`, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showStatus('Terjadi kesalahan saat memproses permintaan. Silakan coba lagi.', 'error');
+                } finally {
+                    downloadBtn.disabled = false;
+                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+                }
+            });
+            
+            // Tambahkan event listener untuk tombol Enter
+            urlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    downloadBtn.click();
+                }
+            });
+
+            // Event listener untuk link Nekopoi
+            nekopoiLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showStatus('Mengarahkan ke Nekopoi...', 'info');
+                setTimeout(() => {
+                    window.open('https://nekopoi.care', '_blank');
+                    hideStatus();
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
