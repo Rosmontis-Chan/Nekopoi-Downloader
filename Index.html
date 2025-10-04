@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Yuk - All Social Media Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(26, 26, 46, 0.9);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #ff2a6d;
+        }
+
+        .header {
+            background: linear-gradient(to right, #ff2a6d, #ff7bac);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .anime-girl {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff7bac, #ff2a6d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .anime-girl img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .download-form {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px 0 0 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .url-input:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px #ff2a6d;
+        }
+
+        .url-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .download-btn {
+            padding: 15px 25px;
+            background: linear-gradient(to right, #ff2a6d, #ff7bac);
+            border: none;
+            border-radius: 0 10px 10px 0;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(to right, #ff1a5c, #ff6ba2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 42, 109, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .supported-sites {
+            background-color: rgba(255, 42, 109, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .supported-sites h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #ff7bac;
+        }
+
+        .sites-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .site-tag {
+            background: rgba(255, 42, 109, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 42, 109, 0.5);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer a {
+            color: #ff7bac;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Status dan hasil */
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            display: block;
+        }
+
+        .status.error {
+            background-color: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            display: block;
+        }
+
+        .status.info {
+            background-color: rgba(23, 162, 184, 0.2);
+            border: 1px solid rgba(23, 162, 184, 0.5);
+            display: block;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            margin-bottom: 10px;
+            color: #ff7bac;
+        }
+
+        .download-link {
+            display: block;
+            padding: 10px 15px;
+            background: linear-gradient(to right, #ff2a6d, #ff7bac);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .download-link:hover {
+            background: linear-gradient(to right, #ff1a5c, #ff6ba2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 42, 109, 0.4);
+        }
+
+        .quality-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quality-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quality-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .quality-btn.active {
+            background: linear-gradient(to right, #ff2a6d, #ff7bac);
+            border-color: #ff2a6d;
+        }
+
+        /* Animasi untuk efek visual */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsif */
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .anime-girl {
+                width: 60px;
+                height: 60px;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .url-input {
+                border-radius: 10px 10px 0 0;
+                margin-bottom: 0;
+            }
+            
+            .download-btn {
+                border-radius: 0 0 10px 10px;
+                padding: 12px;
+                justify-content: center;
+            }
+
+            .quality-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Download Yuk</h1>
+            <p>Download Video & Foto dari Semua Sosial Media</p>
+            <div class="anime-girl pulse">
+                <img src="https://i.imgur.com/6Q9Z7Zv.png" alt="Anime Girl" onerror="this.style.display='none'; this.parentNode.innerHTML='✿';">
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="download-form">
+                <div class="input-group">
+                    <input type="text" class="url-input" placeholder="Tempelkan link Instagram, TikTok, YouTube, dll...">
+                    <button class="download-btn" id="downloadBtn">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+
+            <div class="status info" id="statusInfo">
+                <i class="fas fa-info-circle"></i> <span id="statusText">Sedang memproses...</span>
+            </div>
+
+            <div class="result" id="result">
+                <h3>Hasil Download:</h3>
+                <div id="resultContent"></div>
+                <div class="quality-options" id="qualityOptions"></div>
+            </div>
+            
+            <div class="supported-sites">
+                <h3>Platform yang Didukung:</h3>
+                <div class="sites-list">
+                    <span class="site-tag">Instagram</span>
+                    <span class="site-tag">TikTok</span>
+                    <span class="site-tag">YouTube</span>
+                    <span class="site-tag">Facebook</span>
+                    <span class="site-tag">Twitter</span>
+                    <span class="site-tag">Dan 100+ lainnya</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>By Elysia Chan | <a href="#" id="nekopoiLink">All Social Media Downloader</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            const urlInput = document.querySelector('.url-input');
+            const statusInfo = document.getElementById('statusInfo');
+            const statusText = document.getElementById('statusText');
+            const result = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+            const qualityOptions = document.getElementById('qualityOptions');
+            const nekopoiLink = document.getElementById('nekopoiLink');
+
+            // Fungsi untuk menampilkan status
+            function showStatus(message, type) {
+                statusText.textContent = message;
+                statusInfo.className = 'status ' + type;
+                statusInfo.style.display = 'block';
+            }
+
+            // Fungsi untuk menyembunyikan status
+            function hideStatus() {
+                statusInfo.style.display = 'none';
+            }
+
+            // Fungsi untuk menampilkan hasil
+            function showResult(content) {
+                resultContent.innerHTML = content;
+                result.classList.add('show');
+            }
+
+            // Fungsi untuk menyembunyikan hasil
+            function hideResult() {
+                result.classList.remove('show');
+                qualityOptions.innerHTML = '';
+            }
+
+            // Fungsi untuk menangani proses download
+            downloadBtn.addEventListener('click', async function() {
+                const url = urlInput.value.trim();
+                
+                if (url === '') {
+                    showStatus('Silakan masukkan URL video/foto yang ingin diunduh!', 'error');
+                    urlInput.focus();
+                    return;
+                }
+
+                // Validasi URL sederhana
+                if (!url.startsWith('http')) {
+                    showStatus('URL tidak valid. Pastikan URL diawali dengan http:// atau https://', 'error');
+                    return;
+                }
+
+                // Tampilkan status loading
+                showStatus('Sedang memproses permintaan download...', 'info');
+                downloadBtn.disabled = true;
+                downloadBtn.innerHTML = '<div class="spinner"></div> Memproses...';
+                hideResult();
+
+                try {
+                    // Langsung panggil API RapidAPI
+                    const response = await callRapidAPI(url);
+                    
+                    if (response.success) {
+                        showStatus('Berhasil mendapatkan link download!', 'success');
+                        displayDownloadResults(response.data);
+                    } else {
+                        showStatus(`Error: ${response.error || 'Gagal memproses download'}`, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showStatus('Terjadi kesalahan saat memproses permintaan. Silakan coba lagi.', 'error');
+                } finally {
+                    downloadBtn.disabled = false;
+                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+                }
+            });
+
+            // Fungsi untuk memanggil RapidAPI langsung dari frontend
+            async function callRapidAPI(url) {
+                const formData = new URLSearchParams();
+                formData.append('url', url);
+
+                const response = await fetch('https://all-video-downloader1.p.rapidapi.com/all', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'x-rapidapi-host': 'all-video-downloader1.p.rapidapi.com',
+                        'x-rapidapi-key': '837393c934msh8747bcb37b91d8ep1ba687jsn4ed59f6c1497'
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    return {
+                        success: true,
+                        data: data
+                    };
+                } else {
+                    return {
+                        success: false,
+                        error: data.message || 'API Error'
+                    };
+                }
+            }
+
+            // Fungsi untuk menampilkan hasil download
+            function displayDownloadResults(data) {
+                let content = '';
+                qualityOptions.innerHTML = '';
+
+                // Cek struktur response dan format sesuai
+                if (data.media && data.media.length > 0) {
+                    // Format response untuk multiple media (Instagram, dll)
+                    data.media.forEach((media, index) => {
+                        if (media.type === 'video') {
+                            content += `
+                                <div style="margin-bottom: 15px;">
+                                    <p>Video ${index + 1}</p>
+                                    <video controls style="width: 100%; max-height: 300px; border-radius: 10px; margin: 10px 0;">
+                                        <source src="${media.url}" type="video/mp4">
+                                        Browser tidak mendukung video.
+                                    </video>
+                                    <a href="${media.url}" class="download-link" target="_blank" download>
+                                        <i class="fas fa-download"></i> Download Video ${index + 1}
+                                    </a>
+                                </div>
+                            `;
+                        } else if (media.type === 'image') {
+                            content += `
+                                <div style="margin-bottom: 15px;">
+                                    <p>Gambar ${index + 1}</p>
+                                    <img src="${media.url}" style="width: 100%; max-height: 300px; object-fit: contain; border-radius: 10px; margin: 10px 0;">
+                                    <a href="${media.url}" class="download-link" target="_blank" download>
+                                        <i class="fas fa-download"></i> Download Gambar ${index + 1}
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    });
+                } else if (data.video && data.video.length > 0) {
+                    // Format response untuk video dengan kualitas berbeda (YouTube, dll)
+                    data.video.forEach((video, index) => {
+                        const button = document.createElement('button');
+                        button.className = 'quality-btn';
+                        button.textContent = video.quality || `Kualitas ${index + 1}`;
+                        button.onclick = () => {
+                            // Set semua button tidak aktif
+                            document.querySelectorAll('.quality-btn').forEach(btn => {
+                                btn.classList.remove('active');
+                            });
+                            // Set button ini aktif
+                            button.classList.add('active');
+                            // Tampilkan link download
+                            content = `
+                                <a href="${video.url}" class="download-link" target="_blank" download>
+                                    <i class="fas fa-download"></i> Download Video (${video.quality || 'HQ'})
+                                </a>
+                            `;
+                            showResult(content);
+                        };
+                        qualityOptions.appendChild(button);
+                    });
+
+                    // Auto klik kualitas pertama
+                    if (qualityOptions.firstChild) {
+                        qualityOptions.firstChild.click();
+                    }
+                } else if (data.url) {
+                    // Format response sederhana
+                    content = `
+                        <a href="${data.url}" class="download-link" target="_blank" download>
+                            <i class="fas fa-download"></i> Download Media
+                        </a>
+                    `;
+                } else {
+                    content = '<p>Tidak ada media yang ditemukan. Coba dengan URL yang berbeda.</p>';
+                }
+
+                showResult(content);
+            }
+            
+            // Tambahkan event listener untuk tombol Enter
+            urlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    downloadBtn.click();
+                }
+            });
+
+            // Event listener untuk link
+            nekopoiLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showStatus('Membuka informasi...', 'info');
+                setTimeout(() => {
+                    hideStatus();
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
