@@ -1,11 +1,7 @@
 {
   "version": 2,
-  "name": "nekopoi-downloader",
+  "name": "social-media-downloader",
   "builds": [
-    {
-      "src": "api/download.js",
-      "use": "@vercel/node"
-    },
     {
       "src": "index.html",
       "use": "@vercel/static"
@@ -13,16 +9,8 @@
   ],
   "routes": [
     {
-      "src": "/api/download",
-      "dest": "/api/download.js",
-      "methods": ["POST", "OPTIONS"]
-    },
-    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "RAPIDAPI_KEY": "837393c934msh8747bcb37b91d8ep1ba687jsn4ed59f6c1497"
-  }
+  ]
 }
